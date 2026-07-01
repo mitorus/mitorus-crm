@@ -875,7 +875,7 @@ const SUPABASE_URL = 'https://gbakfpjelhjmjyaogzja.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_Y5RoO9KB-PCc_ufrIPQwhQ_xomq1Lit';
 const TABLE_NAME = 'orders';
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 </script>
 
 <script>
@@ -895,7 +895,7 @@ function showLoginError(msg) {
 }
 
 async function handleLogout() {
-  await supabase.auth.signOut();
+  await sb.auth.signOut();
   showLogin();
 }
 
@@ -909,7 +909,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
   btn.disabled = true;
   btn.textContent = 'Đang đăng nhập...';
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { error } = await sb.auth.signInWithPassword({ email, password });
 
   btn.disabled = false;
   btn.textContent = 'Đăng nhập';
@@ -924,7 +924,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
 
 // Kiểm tra phiên đăng nhập hiện có khi tải trang
 (async () => {
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await sb.auth.getSession();
   if (session) {
     hideLogin();
     initApp();
@@ -934,7 +934,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
 })();
 
 // Nếu phiên hết hạn / bị đăng xuất ở tab khác, quay lại màn hình đăng nhập
-supabase.auth.onAuthStateChange((event) => {
+sb.auth.onAuthStateChange((event) => {
   if (event === 'SIGNED_OUT') showLogin();
 });
 </script>
@@ -963,7 +963,7 @@ function cacheLocally() {
 
 // ===================== SUPABASE DATA LAYER =====================
 async function loadOrdersFromSupabase() {
-  const { data, error } = await supabase
+  const { data, error } = await sb
     .from(TABLE_NAME)
     .select('*')
     .order('createdAt', { ascending: false });
@@ -979,7 +979,7 @@ async function loadOrdersFromSupabase() {
 }
 
 async function upsertOrderToSupabase(o) {
-  const { error } = await supabase.from(TABLE_NAME).upsert(o, { onConflict: 'id' });
+  const { error } = await sb.from(TABLE_NAME).upsert(o, { onConflict: 'id' });
   if (error) {
     console.error(error);
     notify('Lỗi lưu lên Supabase: ' + error.message, 'error');
@@ -989,7 +989,7 @@ async function upsertOrderToSupabase(o) {
 }
 
 async function deleteOrderFromSupabase(id) {
-  const { error } = await supabase.from(TABLE_NAME).delete().eq('id', id);
+  const { error } = await sb.from(TABLE_NAME).delete().eq('id', id);
   if (error) {
     console.error(error);
     notify('Lỗi xóa trên Supabase: ' + error.message, 'error');
