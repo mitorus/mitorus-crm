@@ -1,0 +1,1580 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MiTorus CRM v4.0</title>
+<style>
+  :root {
+    --red: #c41230;
+    --red-dark: #9e0e26;
+    --red-light: #fdf0f2;
+    --red-mid: #f5c6ce;
+    --gold: #c9982a;
+    --gold-light: #fdf8ee;
+    --green: #0d7a53;
+    --green-light: #e8f7f2;
+    --blue: #1a4fa0;
+    --blue-light: #eef3fb;
+    --gray-0: #fff;
+    --gray-1: #f8f8fa;
+    --gray-2: #f0f0f4;
+    --gray-3: #e0e0e8;
+    --gray-4: #b0b0be;
+    --gray-5: #707080;
+    --gray-6: #3a3a48;
+    --shadow-sm: 0 1px 4px rgba(0,0,0,.08);
+    --shadow-md: 0 4px 16px rgba(0,0,0,.10);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--gray-1);
+    color: var(--gray-6);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--red);
+    color: #fff;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(196,18,48,.3);
+  }
+  header .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: .5px;
+  }
+  header .logo .icon {
+    width: 32px; height: 32px;
+    background: rgba(255,255,255,.2);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .header-right { display: flex; gap: 12px; align-items: center; }
+  .version-badge {
+    background: rgba(255,255,255,.2);
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* TABS */
+  .tabs {
+    background: #fff;
+    border-bottom: 2px solid var(--gray-3);
+    display: flex;
+    padding: 0 24px;
+    gap: 4px;
+  }
+  .tab {
+    padding: 12px 20px;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--gray-5);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all .15s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .tab:hover { color: var(--red); }
+  .tab.active { color: var(--red); border-bottom-color: var(--red); }
+
+  /* LAYOUT */
+  .wrap { max-width: 1800px; margin: 0 auto; padding: 20px 24px; }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* CARDS */
+  .card {
+    background: #fff;
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-sm);
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--red);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* GRID */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+  .grid-6 { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+
+  /* FIELDS */
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gray-5);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+  .field label .req { color: var(--red); margin-left: 2px; }
+  input, select, textarea {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1.5px solid var(--gray-3);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    color: var(--gray-6);
+    background: #fff;
+    transition: border .15s, box-shadow .15s;
+    outline: none;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(196,18,48,.1);
+  }
+  textarea { min-height: 160px; resize: vertical; font-family: inherit; }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 16px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all .15s;
+    white-space: nowrap;
+  }
+  .btn:hover { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(0,0,0,.15); }
+  .btn:active { transform: none; }
+  .btn-primary { background: var(--red); color: #fff; }
+  .btn-success { background: var(--green); color: #fff; }
+  .btn-blue { background: var(--blue); color: #fff; }
+  .btn-gold { background: var(--gold); color: #fff; }
+  .btn-ghost { background: var(--gray-2); color: var(--gray-6); }
+  .btn-sm { padding: 5px 10px; font-size: 12px; border-radius: 6px; }
+  .btn-ai {
+    background: linear-gradient(135deg, #c41230, #9e0e26);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(196,18,48,.3);
+  }
+
+  /* STATUS BADGE */
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .status-pending { background: #fff3cd; color: #856404; }
+  .status-done { background: var(--green-light); color: var(--green); }
+  .status-return { background: #f8d7da; color: #842029; }
+  .status-processing { background: var(--blue-light); color: var(--blue); }
+
+  /* AI PANEL */
+  .ai-panel { position: relative; }
+  .ai-result {
+    margin-top: 12px;
+    padding: 14px;
+    background: var(--red-light);
+    border: 1px solid var(--red-mid);
+    border-radius: var(--radius-sm);
+    line-height: 1.8;
+    font-size: 13px;
+    display: none;
+  }
+  .ai-result.show { display: block; }
+  .ai-result .ai-label { font-weight: 700; color: var(--red); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .ai-result table { min-width: unset; width: 100%; }
+  .ai-result th { background: var(--red); }
+  .ai-result td { background: #fff; }
+  .ai-loading {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    color: var(--red);
+    font-weight: 600;
+    padding: 10px 0;
+    font-size: 13px;
+  }
+  .ai-loading.show { display: flex; }
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid var(--red-mid);
+    border-top-color: var(--red);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* STATS */
+  .stat-box {
+    background: #fff;
+    border: 1.5px solid var(--gray-3);
+    border-radius: var(--radius);
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .stat-box.red::before { background: var(--red); }
+  .stat-box.green::before { background: var(--green); }
+  .stat-box.gold::before { background: var(--gold); }
+  .stat-box.blue::before { background: var(--blue); }
+  .stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--gray-5); letter-spacing: .5px; margin-bottom: 6px; }
+  .stat-value { font-size: 22px; font-weight: 800; color: var(--gray-6); }
+  .stat-sub { font-size: 12px; color: var(--gray-4); margin-top: 4px; }
+
+  /* TABLE */
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--gray-3);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 2000px;
+  }
+  thead { position: sticky; top: 0; z-index: 10; }
+  th {
+    background: var(--red);
+    color: #fff;
+    padding: 10px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: left;
+    white-space: nowrap;
+    border-right: 1px solid rgba(255,255,255,.15);
+  }
+  td {
+    padding: 10px 12px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--gray-2);
+    border-right: 1px solid var(--gray-2);
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--red-light); }
+  .profit-positive { color: var(--green); font-weight: 700; }
+  .profit-negative { color: var(--red); font-weight: 700; }
+  .col-id { color: var(--gray-4); font-size: 12px; font-family: monospace; }
+  .col-cost { color: var(--gray-4); font-style: italic; font-size: 12px; }
+
+  /* MONTHLY PROFIT */
+  .month-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+  .month-card {
+    background: var(--gray-1);
+    border: 1.5px solid var(--gray-3);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+  }
+  .month-card .m { font-size: 12px; font-weight: 700; color: var(--gray-5); margin-bottom: 6px; }
+  .month-card .revenue { font-size: 13px; color: var(--blue); font-weight: 600; }
+  .month-card .profit { font-size: 16px; font-weight: 800; color: var(--green); margin-top: 2px; }
+  .month-card .orders { font-size: 11px; color: var(--gray-4); margin-top: 4px; }
+
+  /* TOOLBAR */
+  .toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+  /* FILTERS */
+  .filter-bar {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+  .filter-bar .field { flex: 1; min-width: 160px; }
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--gray-4);
+  }
+  .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+  .empty-state p { font-size: 15px; }
+
+  /* NOTIFICATION */
+  /* LOGIN OVERLAY */
+  .login-overlay {
+    position: fixed; inset: 0; z-index: 9999;
+    background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .login-box {
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    padding: 36px 32px;
+    width: 100%; max-width: 360px;
+  }
+  .login-box .logo {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 20px; font-weight: 800; color: var(--red);
+    margin-bottom: 24px; justify-content: center;
+  }
+  .login-box .logo .icon {
+    width: 36px; height: 36px;
+    background: var(--red-light);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .login-field { margin-bottom: 16px; }
+  .login-field label { display: block; font-size: 13px; font-weight: 600; color: var(--gray-5); margin-bottom: 6px; }
+  .login-field input {
+    width: 100%; padding: 10px 12px;
+    border: 1.5px solid var(--gray-3); border-radius: var(--radius-sm);
+    font-size: 14px; font-family: inherit;
+  }
+  .login-field input:focus { outline: none; border-color: var(--red); }
+  .login-btn {
+    width: 100%; padding: 11px;
+    background: var(--red); color: #fff; border: none;
+    border-radius: var(--radius-sm); font-weight: 700; font-size: 14px;
+    cursor: pointer; margin-top: 4px;
+  }
+  .login-btn:hover { background: var(--red-dark); }
+  .login-btn:disabled { opacity: .6; cursor: default; }
+  .login-error {
+    background: var(--red-light); color: var(--red-dark);
+    border-radius: var(--radius-sm); padding: 8px 12px;
+    font-size: 13px; margin-bottom: 16px; display: none;
+  }
+  .logout-btn {
+    background: rgba(255,255,255,.2); color: #fff; border: none;
+    padding: 6px 12px; border-radius: 99px; font-size: 12px; font-weight: 600;
+    cursor: pointer;
+    display: none; /* JS sẽ hiện sau khi đăng nhập */
+  }
+  .logout-btn:hover { background: rgba(255,255,255,.32); }
+
+  .notif {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--gray-6);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 999;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all .3s;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .notif.show { opacity: 1; transform: translateY(0); }
+  .notif.success { background: var(--green); }
+  .notif.error { background: var(--red); }
+
+  /* INPUT HIGHLIGHT */
+  input.filled { border-color: var(--green); background: var(--green-light); }
+  select.filled { border-color: var(--green); background: var(--green-light); }
+
+  /* SECTION DIVIDER */
+  .section-sep { height: 1px; background: var(--gray-3); margin: 20px 0; }
+
+  /* FORM SECTION TITLE */
+  .form-section {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .6px;
+    color: var(--gray-5);
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--gray-3);
+  }
+
+  /* PRODUCT QUICK SELECT */
+  .product-chips {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .chip {
+    padding: 6px 14px;
+    border: 2px solid var(--gray-3);
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .15s;
+    color: var(--gray-5);
+  }
+  .chip:hover { border-color: var(--red); color: var(--red); }
+  .chip.active { border-color: var(--red); background: var(--red); color: #fff; }
+
+  /* TOTALS ROW */
+  tfoot td {
+    background: var(--gray-2);
+    font-weight: 700;
+    font-size: 13px;
+    border-top: 2px solid var(--gray-3);
+  }
+
+  /* COD HIGHLIGHT */
+  .cod-value { color: var(--gold); font-weight: 700; }
+  .ck-value { color: var(--blue); font-weight: 600; }
+
+  @media (max-width: 1200px) {
+    .grid-6 { grid-template-columns: repeat(3, 1fr); }
+    .grid-5 { grid-template-columns: repeat(3, 1fr); }
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 700px) {
+    .grid-2, .grid-3, .grid-4, .grid-5, .grid-6 { grid-template-columns: 1fr; }
+    .wrap { padding: 12px 16px; }
+    header { padding: 0 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN OVERLAY -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <div class="logo"><div class="icon">⟳</div> MiTorus CRM</div>
+    <div class="login-error" id="loginError"></div>
+    <form id="loginForm">
+      <div class="login-field">
+        <label>Email</label>
+        <input type="email" id="loginEmail" autocomplete="username" required>
+      </div>
+      <div class="login-field">
+        <label>Mật khẩu</label>
+        <input type="password" id="loginPassword" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="login-btn" id="loginBtn">Đăng nhập</button>
+    </form>
+  </div>
+</div>
+
+<header>
+  <div class="logo">
+    <div class="icon">⟳</div>
+    MiTorus CRM
+  </div>
+  <div class="header-right">
+    <span class="version-badge">v4.0 AI</span>
+    <button class="logout-btn" id="logoutBtn" onclick="handleLogout()">Đăng xuất</button>
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('tab-order')">📦 Tạo đơn hàng</div>
+  <div class="tab" onclick="switchTab('tab-list')">📋 Danh sách đơn</div>
+  <div class="tab" onclick="switchTab('tab-stats')">📊 Thống kê</div>
+</div>
+
+<div class="wrap">
+
+  <!-- ========== TAB 1: TẠO ĐƠN ========== -->
+  <div id="tab-order" class="page active">
+
+    <!-- AI PARSE PANEL -->
+    <div class="card ai-panel">
+      <div class="card-title">🤖 AI Phân tích tin nhắn khách</div>
+      <div class="field">
+        <label>Dán tin nhắn khách vào đây</label>
+        <textarea id="raw" placeholder="Ví dụ:
+Tên: Nguyễn Thị Lan
+SĐT: 0903 456 789
+Địa chỉ: 45 Lê Lợi, P.Bến Nghé, Q.1, TP.HCM
+Lấy mặt dây torus màu tím, type c
+Cọc trước 500k, ship SPX"></textarea>
+      </div>
+      <br>
+      <div class="toolbar">
+        <button class="btn btn-ai" onclick="parseWithAI()">✨ Phân tích bằng AI</button>
+        <button class="btn btn-ghost" onclick="resetForm()">🔄 Làm mới</button>
+        <button class="btn btn-success" onclick="saveOrder()">💾 Lưu đơn</button>
+        <button class="btn btn-blue" onclick="exportCSV()">📥 Xuất CSV</button>
+      </div>
+
+      <div class="ai-loading" id="aiLoading">
+        <div class="spinner"></div>
+        AI đang phân tích tin nhắn...
+      </div>
+
+      <div class="ai-result" id="aiResult">
+        <div class="ai-label">✅ Kết quả AI phân tích</div>
+        <div id="aiResultContent"></div>
+      </div>
+    </div>
+
+    <!-- FORM THÔNG TIN -->
+    <div class="card">
+      <div class="card-title">📝 Thông tin đơn hàng</div>
+
+      <div class="form-section">👤 Thông tin khách hàng</div>
+      <div class="grid-4" style="margin-bottom:16px">
+        <div class="field">
+          <label>Ngày đặt hàng <span class="req">*</span></label>
+          <input type="date" id="orderDate">
+        </div>
+        <div class="field">
+          <label>Tên khách <span class="req">*</span></label>
+          <input id="name" placeholder="Nguyễn Văn A">
+        </div>
+        <div class="field">
+          <label>Số điện thoại <span class="req">*</span></label>
+          <input id="phone" placeholder="0909xxxxxx">
+        </div>
+        <div class="field">
+          <label>Địa chỉ giao hàng</label>
+          <input id="addr" placeholder="Số nhà, đường, phường, quận, tỉnh/TP">
+        </div>
+      </div>
+
+      <div class="form-section">🛍️ Sản phẩm</div>
+      <div class="product-chips">
+        <div class="chip" onclick="selectProduct('Mặt Dây Torus')">Mặt Dây Torus</div>
+        <div class="chip" onclick="selectProduct('Mặt Dây PEMF')">Mặt Dây PEMF</div>
+        <div class="chip" onclick="selectProduct('Torus Rodin Coil')">Torus Rodin Coil</div>
+      </div>
+      <div class="grid-4" style="margin-bottom:16px">
+        <div class="field">
+          <label>Loại sản phẩm</label>
+          <select id="product" onchange="onProductChange()">
+            <option value="">-- Chọn sản phẩm --</option>
+            <option>Mặt Dây Torus</option>
+            <option>Mặt Dây PEMF</option>
+            <option>Torus Rodin Coil</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Màu sắc</label>
+          <select id="color">
+            <option value="">-- Chọn màu --</option>
+            <option>Tím</option>
+            <option>Đỏ</option>
+            <option>Vàng</option>
+            <option>Xanh lá</option>
+            <option>Xanh dương</option>
+            <option>Trắng</option>
+            <option>Hồng</option>
+            <option>Xanh Aqua</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Loại cáp sạc</label>
+          <select id="cable">
+            <option value="">-- Chọn cáp --</option>
+            <option>Type C</option>
+            <option>Lightning</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Số lượng</label>
+          <input type="number" id="qty" value="1" min="1" onchange="calcAll()">
+        </div>
+      </div>
+
+      <div class="form-section">💰 Tài chính</div>
+      <div class="grid-5" style="margin-bottom:16px">
+        <div class="field">
+          <label>Giá bán (VNĐ)</label>
+          <input type="number" id="sale" placeholder="0" oninput="calcAll()">
+        </div>
+        <div class="field">
+          <label>Giá nhập (VNĐ)</label>
+          <input type="number" id="cost" placeholder="0" oninput="calcAll()">
+        </div>
+        <div class="field">
+          <label>Phí ship thực tế (VNĐ)</label>
+          <input type="number" id="shipfee" value="0" placeholder="0" oninput="calcAll()">
+          <small style="color:var(--gray-4);font-size:11px">Để tính lợi nhuận thực</small>
+        </div>
+        <div class="field">
+          <label>Đã cọc / chuyển khoản (VNĐ)</label>
+          <input type="number" id="deposit" value="0" placeholder="0" oninput="calcAll()">
+        </div>
+        <div class="field">
+          <label>COD còn lại (VNĐ)</label>
+          <input type="number" id="shipcod" value="0" placeholder="0">
+        </div>
+      </div>
+
+      <!-- LIVE CALC -->
+      <div id="liveCalc" style="display:none;background:var(--gray-1);border:1.5px solid var(--gray-3);border-radius:var(--radius-sm);padding:14px;margin-bottom:16px">
+        <div style="font-size:12px;font-weight:700;color:var(--gray-5);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">⚡ Tính nhanh lợi nhuận đơn này</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+          <div>
+            <div style="font-size:11px;color:var(--gray-4)">Doanh thu</div>
+            <div id="calcRevenue" style="font-size:16px;font-weight:800;color:var(--blue)">0 đ</div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--gray-4)">Giá nhập</div>
+            <div id="calcCost" style="font-size:16px;font-weight:800;color:var(--gray-5)">0 đ</div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--gray-4)">Phí ship</div>
+            <div id="calcShip" style="font-size:16px;font-weight:800;color:var(--gold)">0 đ</div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--gray-4)">Lợi nhuận ước tính</div>
+            <div id="calcProfit" style="font-size:16px;font-weight:800;color:var(--green)">0 đ</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">🚚 Vận chuyển & Trạng thái</div>
+      <div class="grid-4">
+        <div class="field">
+          <label>Thanh toán</label>
+          <select id="pay">
+            <option>CK</option>
+            <option>COD</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Đơn vị vận chuyển</label>
+          <select id="ship">
+            <option>SPX</option>
+            <option>Grab</option>
+            <option>Viettel Post</option>
+            <option>J&T</option>
+            <option>GHN</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Trạng thái đơn</label>
+          <select id="status">
+            <option>Chờ làm hàng</option>
+            <option>Đang xử lý</option>
+            <option>Đã giao hàng</option>
+            <option>Thành Công</option>
+            <option>Hoàn trả</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Ghi chú</label>
+          <input id="note" placeholder="Thông tin thêm...">
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="resetForm()">🔄 Làm mới form</button>
+      <button class="btn btn-success" onclick="saveOrder()" style="padding:12px 28px;font-size:15px">💾 Lưu đơn hàng</button>
+    </div>
+  </div>
+
+  <!-- ========== TAB 2: DANH SÁCH ĐƠN ========== -->
+  <div id="tab-list" class="page">
+
+    <!-- QUICK STATS -->
+    <div class="grid-6" style="margin-bottom:16px" id="quickStats">
+      <div class="stat-box red">
+        <div class="stat-label">Tổng đơn</div>
+        <div class="stat-value" id="sTotal">0</div>
+        <div class="stat-sub">đang hiển thị</div>
+      </div>
+      <div class="stat-box blue">
+        <div class="stat-label">Doanh thu</div>
+        <div class="stat-value" id="sRevenue">0</div>
+        <div class="stat-sub">VNĐ</div>
+      </div>
+      <div class="stat-box green">
+        <div class="stat-label">Lợi nhuận</div>
+        <div class="stat-value" id="sProfit">0</div>
+        <div class="stat-sub">VNĐ</div>
+      </div>
+      <div class="stat-box gold">
+        <div class="stat-label">Tổng đã cọc</div>
+        <div class="stat-value" id="sDeposit">0</div>
+        <div class="stat-sub">VNĐ</div>
+      </div>
+      <div class="stat-box gold">
+        <div class="stat-label">Tổng COD</div>
+        <div class="stat-value" id="sCOD">0</div>
+        <div class="stat-sub">còn phải thu</div>
+      </div>
+      <div class="stat-box green">
+        <div class="stat-label">LN tháng lọc</div>
+        <div class="stat-value" id="sMonthProfit">—</div>
+        <div class="stat-sub">VNĐ</div>
+      </div>
+    </div>
+
+    <!-- FILTER BAR -->
+    <div class="card">
+      <div class="filter-bar">
+        <div class="field" style="min-width:200px">
+          <label>🔍 Tìm kiếm</label>
+          <input id="searchText" placeholder="Tên, SĐT, mã đơn..." oninput="render()">
+        </div>
+        <div class="field">
+          <label>Trạng thái</label>
+          <select id="filterStatus" onchange="render()">
+            <option value="Tất cả">Tất cả</option>
+            <option>Chờ làm hàng</option>
+            <option>Đang xử lý</option>
+            <option>Đã giao hàng</option>
+            <option>Thành Công</option>
+            <option>Hoàn trả</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Sản phẩm</label>
+          <select id="filterProduct" onchange="render()">
+            <option value="Tất cả">Tất cả</option>
+            <option>Mặt Dây Torus</option>
+            <option>Mặt Dây PEMF</option>
+            <option>Torus Rodin Coil</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Tháng</label>
+          <input type="month" id="filterMonth" onchange="render()">
+        </div>
+        <div class="field">
+          <label>Thanh toán</label>
+          <select id="filterPay" onchange="render()">
+            <option value="Tất cả">Tất cả</option>
+            <option>CK</option>
+            <option>COD</option>
+          </select>
+        </div>
+        <button class="btn btn-ghost" onclick="clearFilters()" style="margin-top:22px">✕ Xóa lọc</button>
+        <button class="btn btn-success" onclick="exportCSV()" style="margin-top:22px">📥 Xuất CSV</button>
+      </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="card" style="padding:0;overflow:hidden">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Mã đơn</th>
+              <th>Ngày đặt</th>
+              <th>Tên khách</th>
+              <th>SĐT</th>
+              <th>Địa chỉ</th>
+              <th>Sản phẩm</th>
+              <th>Màu</th>
+              <th>Cáp</th>
+              <th>SL</th>
+              <th>Giá bán</th>
+              <th>Giá nhập</th>
+              <th>Phí ship</th>
+              <th>Đã cọc/CK</th>
+              <th>COD còn lại</th>
+              <th>Lợi nhuận</th>
+              <th>TT</th>
+              <th>VC</th>
+              <th>Trạng thái</th>
+              <th>Ghi chú</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody id="tb"></tbody>
+          <tfoot id="tfootRow"></tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== TAB 3: THỐNG KÊ ========== -->
+  <div id="tab-stats" class="page">
+
+    <div class="grid-4" style="margin-bottom:16px">
+      <div class="stat-box red">
+        <div class="stat-label">Tổng đơn toàn bộ</div>
+        <div class="stat-value" id="allTotal">0</div>
+      </div>
+      <div class="stat-box blue">
+        <div class="stat-label">Tổng doanh thu</div>
+        <div class="stat-value" id="allRevenue">0</div>
+        <div class="stat-sub">VNĐ</div>
+      </div>
+      <div class="stat-box green">
+        <div class="stat-label">Tổng lợi nhuận</div>
+        <div class="stat-value" id="allProfit">0</div>
+        <div class="stat-sub">VNĐ</div>
+      </div>
+      <div class="stat-box gold">
+        <div class="stat-label">Tổng COD chưa thu</div>
+        <div class="stat-value" id="allCOD">0</div>
+        <div class="stat-sub">VNĐ</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📅 Lợi nhuận & Doanh thu theo tháng</div>
+      <div class="month-grid" id="monthlyBox">
+        <div class="empty-state"><div class="icon">📊</div><p>Chưa có dữ liệu</p></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📦 Thống kê theo sản phẩm</div>
+      <div id="productStats"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🚦 Thống kê trạng thái đơn</div>
+      <div id="statusStats"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- NOTIFICATION -->
+<div class="notif" id="notif"></div>
+
+<!-- SUPABASE CLIENT -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ===================== SUPABASE CONFIG =====================
+// Điền Anon/Public API Key của bạn vào bên dưới (lấy trong Supabase > Project Settings > API)
+const SUPABASE_URL = 'https://gbakfpjelhjmjyaogzja.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_Y5RoO9KB-PCc_ufrIPQwhQ_xomq1Lit';
+const TABLE_NAME = 'orders';
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+</script>
+
+<script>
+// ===================== AUTH =====================
+function showLogin() {
+  document.getElementById('loginOverlay').style.display = 'flex';
+  document.getElementById('logoutBtn').style.display = 'none';
+}
+function hideLogin() {
+  document.getElementById('loginOverlay').style.display = 'none';
+  document.getElementById('logoutBtn').style.display = 'inline-block';
+}
+function showLoginError(msg) {
+  const el = document.getElementById('loginError');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+async function handleLogout() {
+  await supabase.auth.signOut();
+  showLogin();
+}
+
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const btn = document.getElementById('loginBtn');
+  const errEl = document.getElementById('loginError');
+  errEl.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Đang đăng nhập...';
+
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+  btn.disabled = false;
+  btn.textContent = 'Đăng nhập';
+
+  if (error) {
+    showLoginError('Sai email hoặc mật khẩu.');
+    return;
+  }
+  hideLogin();
+  initApp();
+});
+
+// Kiểm tra phiên đăng nhập hiện có khi tải trang
+(async () => {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session) {
+    hideLogin();
+    initApp();
+  } else {
+    showLogin();
+  }
+})();
+
+// Nếu phiên hết hạn / bị đăng xuất ở tab khác, quay lại màn hình đăng nhập
+supabase.auth.onAuthStateChange((event) => {
+  if (event === 'SIGNED_OUT') showLogin();
+});
+</script>
+
+<script>
+// ===================== DATA & CONFIG =====================
+const STORAGE_KEY = 'mitorusCRM_v4'; // vẫn giữ làm cache tạm/offline fallback
+
+const PRICE_MAP = {
+  'Mặt Dây Torus': { sale: 1680000, cost: 1000000 },
+  'Mặt Dây PEMF':  { sale: 2480000, cost: 1500000 },
+  'Torus Rodin Coil': { sale: 12680000, cost: 7000000 }
+};
+
+let orders = [];
+let editingId = null;
+
+// Tải dữ liệu cache tạm (trong lúc chờ Supabase phản hồi) để tránh giật màn hình
+try {
+  orders = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+} catch(e) { orders = []; }
+
+function cacheLocally() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(orders)); } catch(e) {}
+}
+
+// ===================== SUPABASE DATA LAYER =====================
+async function loadOrdersFromSupabase() {
+  const { data, error } = await supabase
+    .from(TABLE_NAME)
+    .select('*')
+    .order('createdAt', { ascending: false });
+
+  if (error) {
+    console.error(error);
+    notify('Lỗi tải dữ liệu từ Supabase: ' + error.message, 'error');
+    return;
+  }
+  orders = data || [];
+  cacheLocally();
+  render();
+}
+
+async function upsertOrderToSupabase(o) {
+  const { error } = await supabase.from(TABLE_NAME).upsert(o, { onConflict: 'id' });
+  if (error) {
+    console.error(error);
+    notify('Lỗi lưu lên Supabase: ' + error.message, 'error');
+    return false;
+  }
+  return true;
+}
+
+async function deleteOrderFromSupabase(id) {
+  const { error } = await supabase.from(TABLE_NAME).delete().eq('id', id);
+  if (error) {
+    console.error(error);
+    notify('Lỗi xóa trên Supabase: ' + error.message, 'error');
+    return false;
+  }
+  return true;
+}
+
+// ===================== UTILS =====================
+const $ = id => document.getElementById(id);
+const fmt = n => (+n || 0).toLocaleString('vi-VN');
+const fmtShort = n => {
+  const v = +n || 0;
+  if (v >= 1000000) return (v / 1000000).toFixed(1).replace('.0','') + 'tr';
+  if (v >= 1000) return (v / 1000).toFixed(0) + 'k';
+  return v.toString();
+};
+
+function save() {
+  // Giữ lại cache local để load nhanh lần sau / phòng khi mất mạng
+  cacheLocally();
+}
+
+function notify(msg, type = 'success') {
+  const el = $('notif');
+  el.textContent = '';
+  el.className = 'notif ' + type;
+  el.innerHTML = (type === 'success' ? '✅ ' : type === 'error' ? '❌ ' : 'ℹ️ ') + msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+function getProfit(o) {
+  return (+o.sale || 0) - (+o.cost || 0) - (+o.shipfee || 0);
+}
+
+function getMonthKey(d) {
+  return d && /^\d{4}-\d{2}/.test(d) ? d.slice(0, 7) : null;
+}
+
+function nextId() {
+  const max = orders.reduce((m, o) => Math.max(m, parseInt((o.id || '').replace(/\D/g,'') || '0', 10)), 0);
+  return 'MT' + String(max + 1).padStart(4, '0');
+}
+
+function setToday() {
+  if (!$('orderDate').value) {
+    const d = new Date();
+    $('orderDate').value = d.toISOString().slice(0, 10);
+  }
+}
+
+function markFilled(id) {
+  const el = $(id);
+  if (el && el.value) el.classList.add('filled');
+  else if (el) el.classList.remove('filled');
+}
+
+// ===================== TABS =====================
+function switchTab(tabId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  $(tabId).classList.add('active');
+  const idx = ['tab-order', 'tab-list', 'tab-stats'].indexOf(tabId);
+  document.querySelectorAll('.tab')[idx].classList.add('active');
+  if (tabId === 'tab-list' || tabId === 'tab-stats') render();
+}
+
+// ===================== PRODUCT CHIPS =====================
+function selectProduct(val) {
+  $('product').value = val;
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.chip').forEach(c => {
+    if (c.textContent === val) c.classList.add('active');
+  });
+  onProductChange();
+}
+
+function onProductChange() {
+  const p = $('product').value;
+  // sync chips
+  document.querySelectorAll('.chip').forEach(c => {
+    c.classList.toggle('active', c.textContent === p);
+  });
+  if (PRICE_MAP[p]) {
+    $('sale').value = PRICE_MAP[p].sale;
+    $('cost').value = PRICE_MAP[p].cost;
+  }
+  calcAll();
+}
+
+// ===================== CALC =====================
+function calcAll() {
+  const sale = +$('sale').value || 0;
+  const cost = +$('cost').value || 0;
+  const ship = +$('shipfee').value || 0;
+  const deposit = +$('deposit').value || 0;
+  const cod = Math.max(0, sale - deposit);
+  $('shipcod').value = cod;
+  const profit = sale - cost - ship;
+
+  // show live calc
+  const lc = $('liveCalc');
+  if (sale > 0) {
+    lc.style.display = 'block';
+    $('calcRevenue').textContent = fmt(sale) + ' đ';
+    $('calcCost').textContent = fmt(cost) + ' đ';
+    $('calcShip').textContent = fmt(ship) + ' đ';
+    $('calcProfit').textContent = fmt(profit) + ' đ';
+    $('calcProfit').style.color = profit >= 0 ? 'var(--green)' : 'var(--red)';
+  } else {
+    lc.style.display = 'none';
+  }
+}
+
+// ===================== FORM =====================
+function resetForm() {
+  editingId = null;
+  ['name','phone','addr','color','cable','note','raw'].forEach(id => $(id).value = '');
+  ['sale','cost','deposit','shipfee','shipcod'].forEach(id => $(id).value = 0);
+  $('qty').value = 1;
+  $('product').value = '';
+  $('pay').value = 'CK';
+  $('ship').value = 'SPX';
+  $('status').value = 'Chờ làm hàng';
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('input.filled, select.filled').forEach(el => el.classList.remove('filled'));
+  $('aiResult').classList.remove('show');
+  $('aiLoading').classList.remove('show');
+  $('liveCalc').style.display = 'none';
+  setToday();
+}
+
+function getFormData() {
+  calcAll();
+  setToday();
+  return {
+    id: editingId || nextId(),
+    orderDate: $('orderDate').value,
+    name: $('name').value.trim(),
+    phone: $('phone').value.trim(),
+    addr: $('addr').value.trim(),
+    product: $('product').value,
+    color: $('color').value,
+    cable: $('cable').value,
+    qty: +$('qty').value || 1,
+    sale: +$('sale').value || 0,
+    cost: +$('cost').value || 0,
+    shipfee: +$('shipfee').value || 0,
+    deposit: +$('deposit').value || 0,
+    shipcod: +$('shipcod').value || 0,
+    note: $('note').value.trim(),
+    pay: $('pay').value,
+    ship: $('ship').value,
+    status: $('status').value,
+    createdAt: editingId ? undefined : new Date().toISOString()
+  };
+}
+
+async function saveOrder() {
+  const o = getFormData();
+  if (!o.name && !o.phone) {
+    notify('Vui lòng nhập tên hoặc SĐT khách', 'error');
+    return;
+  }
+  const idx = orders.findIndex(x => x.id === o.id);
+  const isUpdate = idx >= 0;
+  if (isUpdate) {
+    o.createdAt = orders[idx].createdAt;
+  } else if (!o.createdAt) {
+    o.createdAt = new Date().toISOString();
+  }
+
+  const ok = await upsertOrderToSupabase(o);
+  if (!ok) return;
+
+  if (isUpdate) {
+    orders[idx] = o;
+    notify('Đã cập nhật đơn ' + o.id);
+  } else {
+    orders.push(o);
+    notify('Đã lưu đơn ' + o.id + ' thành công!');
+  }
+  save();
+  editingId = null;
+  resetForm();
+  switchTab('tab-list');
+}
+
+function editOrder(id) {
+  const o = orders.find(x => x.id === id);
+  if (!o) return;
+  editingId = id;
+  setToday();
+  $('orderDate').value = o.orderDate || '';
+  $('name').value = o.name || '';
+  $('phone').value = o.phone || '';
+  $('addr').value = o.addr || '';
+  $('product').value = o.product || '';
+  $('color').value = o.color || '';
+  $('cable').value = o.cable || '';
+  $('qty').value = o.qty || 1;
+  $('sale').value = o.sale || 0;
+  $('cost').value = o.cost || 0;
+  $('shipfee').value = o.shipfee || 0;
+  $('deposit').value = o.deposit || 0;
+  $('shipcod').value = o.shipcod || 0;
+  $('note').value = o.note || '';
+  $('pay').value = o.pay || 'CK';
+  $('ship').value = o.ship || 'SPX';
+  $('status').value = o.status || 'Chờ làm hàng';
+  // sync chips
+  document.querySelectorAll('.chip').forEach(c => {
+    c.classList.toggle('active', c.textContent === o.product);
+  });
+  calcAll();
+  switchTab('tab-order');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  notify('Đang sửa đơn ' + id, 'info');
+}
+
+async function deleteOrder(id) {
+  if (!confirm('Xóa đơn ' + id + '?\nKhông thể hoàn tác!')) return;
+  const ok = await deleteOrderFromSupabase(id);
+  if (!ok) return;
+  orders = orders.filter(o => o.id !== id);
+  save();
+  render();
+  notify('Đã xóa đơn ' + id);
+}
+
+async function changeStatus(id, val) {
+  const o = orders.find(x => x.id === id);
+  if (!o) return;
+  const prevStatus = o.status;
+  o.status = val;
+  const ok = await upsertOrderToSupabase(o);
+  if (!ok) { o.status = prevStatus; render(); return; }
+  save();
+  render();
+  notify('Đã cập nhật trạng thái');
+}
+
+// ===================== AI PARSE =====================
+async function parseWithAI() {
+  const raw = $('raw').value.trim();
+  if (!raw) {
+    notify('Chưa có tin nhắn để phân tích', 'error');
+    return;
+  }
+
+  $('aiLoading').classList.add('show');
+  $('aiResult').classList.remove('show');
+
+  const prompt = `Bạn là AI phân tích đơn hàng cho cửa hàng MiTorus chuyên bán sản phẩm: Mặt Dây Torus, Mặt Dây PEMF, Torus Rodin Coil.
+
+Hãy phân tích tin nhắn sau và trả về JSON (KHÔNG có markdown, KHÔNG có backtick):
+{
+  "name": "tên khách hàng",
+  "phone": "số điện thoại (chuẩn hóa về dạng 0xxx, bỏ khoảng trắng, dấu chấm)",
+  "addr": "địa chỉ đầy đủ",
+  "product": "một trong: Mặt Dây Torus | Mặt Dây PEMF | Torus Rodin Coil | (để trống nếu không rõ)",
+  "color": "một trong: Tím | Đỏ | Vàng | Xanh lá | Xanh dương | Trắng | Hồng | Xanh Aqua | (để trống)",
+  "cable": "một trong: Type C | Lightning | (để trống)",
+  "deposit": số tiền đã cọc/chuyển khoản (số nguyên, 0 nếu không có),
+  "shipProvider": "một trong: SPX | Grab | Viettel Post | J&T | GHN | (mặc định SPX)",
+  "payMethod": "CK hoặc COD",
+  "note": "những thông tin khác không khớp với các trường trên"
+}
+
+Tin nhắn khách:
+"""
+${raw}
+"""
+
+Lưu ý: Trả về JSON thuần túy, không giải thích.`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const data = await resp.json();
+    const text = data.content?.map(b => b.text || '').join('') || '';
+    const clean = text.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+
+    // Fill form
+    if (parsed.name)    { $('name').value = parsed.name; markFilled('name'); }
+    if (parsed.phone)   { $('phone').value = parsed.phone; markFilled('phone'); }
+    if (parsed.addr)    { $('addr').value = parsed.addr; markFilled('addr'); }
+    if (parsed.color)   { $('color').value = parsed.color; markFilled('color'); }
+    if (parsed.cable)   { $('cable').value = parsed.cable; markFilled('cable'); }
+    if (parsed.deposit) { $('deposit').value = parsed.deposit; }
+    if (parsed.shipProvider) { $('ship').value = parsed.shipProvider; }
+    if (parsed.payMethod)    { $('pay').value = parsed.payMethod; }
+    if (parsed.note)    { $('note').value = parsed.note; }
+
+    if (parsed.product) {
+      selectProduct(parsed.product);
+    }
+
+    setToday();
+    calcAll();
+
+    // Show result summary
+    const rows = [
+      ['Tên', parsed.name || '—'],
+      ['SĐT', parsed.phone || '—'],
+      ['Địa chỉ', parsed.addr || '—'],
+      ['Sản phẩm', parsed.product || '—'],
+      ['Màu', parsed.color || '—'],
+      ['Cáp', parsed.cable || '—'],
+      ['Đã cọc', parsed.deposit ? fmt(parsed.deposit) + ' đ' : '—'],
+      ['VC', parsed.shipProvider || '—'],
+      ['TT', parsed.payMethod || '—'],
+      ['Ghi chú', parsed.note || '—'],
+    ];
+    $('aiResultContent').innerHTML = rows.map(([k, v]) =>
+      `<div style="display:flex;gap:8px;border-bottom:1px solid var(--red-mid);padding:5px 0">
+        <span style="font-weight:700;color:var(--gray-5);min-width:80px;font-size:12px">${k}</span>
+        <span style="color:var(--gray-6)">${v}</span>
+      </div>`
+    ).join('');
+    $('aiResult').classList.add('show');
+    notify('AI phân tích xong! Kiểm tra và lưu đơn.', 'success');
+
+  } catch(err) {
+    console.error(err);
+    notify('AI lỗi: ' + err.message, 'error');
+  } finally {
+    $('aiLoading').classList.remove('show');
+  }
+}
+
+// ===================== FILTERS =====================
+function getFiltered() {
+  const status = $('filterStatus').value;
+  const month = $('filterMonth').value;
+  const search = ($('searchText').value || '').toLowerCase().trim();
+  const product = $('filterProduct').value;
+  const pay = $('filterPay').value;
+
+  return orders.filter(o => {
+    if (status !== 'Tất cả' && o.status !== status) return false;
+    if (month && getMonthKey(o.orderDate) !== month) return false;
+    if (product !== 'Tất cả' && o.product !== product) return false;
+    if (pay !== 'Tất cả' && o.pay !== pay) return false;
+    if (search) {
+      const hay = [(o.name||''), (o.phone||''), (o.id||''), (o.addr||'')].join(' ').toLowerCase();
+      if (!hay.includes(search)) return false;
+    }
+    return true;
+  });
+}
+
+function clearFilters() {
+  $('filterStatus').value = 'Tất cả';
+  $('filterMonth').value = '';
+  $('searchText').value = '';
+  $('filterProduct').value = 'Tất cả';
+  $('filterPay').value = 'Tất cả';
+  render();
+}
+
+// ===================== STATUS BADGE =====================
+function statusBadge(s) {
+  const map = {
+    'Chờ làm hàng': 'status-pending',
+    'Đang xử lý': 'status-processing',
+    'Đã giao hàng': 'status-processing',
+    'Thành Công': 'status-done',
+    'Hoàn trả': 'status-return'
+  };
+  return `<span class="status-badge ${map[s]||'status-pending'}">${s}</span>`;
+}
+
+// ===================== RENDER =====================
+function render() {
+  const filtered = getFiltered();
+  const tb = $('tb');
+  let dt = 0, ln = 0, dep = 0, cod = 0;
+
+  if (!filtered.length) {
+    tb.innerHTML = `<tr><td colspan="20" style="text-align:center;padding:48px;color:var(--gray-4)">
+      <div style="font-size:40px;margin-bottom:12px">📭</div>
+      <div>Không có đơn hàng nào</div>
+    </td></tr>`;
+  } else {
+    tb.innerHTML = filtered.map(o => {
+      const profit = getProfit(o);
+      const depVal = +o.deposit || 0;
+      const codVal = +o.shipcod || Math.max(0, (+o.sale||0) - depVal);
+      dt += +o.sale || 0;
+      ln += profit;
+      dep += depVal;
+      cod += codVal;
+
+      return `<tr>
+        <td class="col-id">${o.id}</td>
+        <td>${o.orderDate || '—'}</td>
+        <td><strong>${o.name || '—'}</strong></td>
+        <td>${o.phone || '—'}</td>
+        <td style="max-width:160px;font-size:12px">${o.addr || '—'}</td>
+        <td>${o.product || '—'}</td>
+        <td>${o.color || '—'}</td>
+        <td>${o.cable || '—'}</td>
+        <td style="text-align:center">${o.qty || 1}</td>
+        <td><strong>${fmt(o.sale)} đ</strong></td>
+        <td class="col-cost">${fmt(o.cost)} đ</td>
+        <td>${fmt(o.shipfee)} đ</td>
+        <td class="${o.pay==='CK'?'ck-value':'cod-value'}">${fmt(depVal)} đ</td>
+        <td class="cod-value">${fmt(codVal)} đ</td>
+        <td class="${profit>=0?'profit-positive':'profit-negative'}">${fmt(profit)} đ</td>
+        <td><span style="font-size:12px;font-weight:600;color:${o.pay==='CK'?'var(--blue)':'var(--gold)'}">${o.pay||''}</span></td>
+        <td style="font-size:12px">${o.ship||''}</td>
+        <td>
+          <select onchange="changeStatus('${o.id}',this.value)" style="font-size:12px;padding:4px 8px;border-radius:6px;border:1px solid var(--gray-3)">
+            ${['Chờ làm hàng','Đang xử lý','Đã giao hàng','Thành Công','Hoàn trả'].map(s =>
+              `<option value="${s}" ${o.status===s?'selected':''}>${s}</option>`
+            ).join('')}
+          </select>
+        </td>
+        <td style="max-width:120px;font-size:12px;color:var(--gray-5)">${o.note||''}</td>
+        <td>
+          <div class="row-actions" style="display:flex;gap:4px">
+            <button class="btn btn-blue btn-sm" onclick="editOrder('${o.id}')">✏️</button>
+            <button class="btn btn-primary btn-sm" onclick="deleteOrder('${o.id}')">🗑️</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  // Tfoot
+  if (filtered.length) {
+    $('tfootRow').innerHTML = `<tr>
+      <td colspan="9" style="text-align:right;font-weight:700">TỔNG CỘNG (${filtered.length} đơn)</td>
+      <td><strong>${fmt(dt)} đ</strong></td>
+      <td>—</td>
+      <td>—</td>
+      <td>${fmt(dep)} đ</td>
+      <td>${fmt(cod)} đ</td>
+      <td class="${ln>=0?'profit-positive':'profit-negative'}">${fmt(ln)} đ</td>
+      <td colspan="5"></td>
+    </tr>`;
+  } else {
+    $('tfootRow').innerHTML = '';
+  }
+
+  // Quick stats
+  $('sTotal').textContent = filtered.length;
+  $('sRevenue').textContent = fmtShort(dt);
+  $('sProfit').textContent = fmtShort(ln);
+  $('sDeposit').textContent = fmtShort(dep);
+  $('sCOD').textContent = fmtShort(cod);
+  const month = $('filterMonth').value;
+  $('sMonthProfit').textContent = month ? fmtShort(ln) : '—';
+
+  renderStats();
+}
+
+// ===================== STATS =====================
+function renderStats() {
+  // All-time totals
+  let allDt = 0, allLn = 0, allCod = 0;
+  orders.forEach(o => {
+    allDt += +o.sale || 0;
+    allLn += getProfit(o);
+    allCod += +o.shipcod || Math.max(0, (+o.sale||0) - (+o.deposit||0));
+  });
+  $('allTotal').textContent = orders.length;
+  $('allRevenue').textContent = fmtShort(allDt);
+  $('allProfit').textContent = fmtShort(allLn);
+  $('allCOD').textContent = fmtShort(allCod);
+
+  // Monthly
+  const monthMap = {};
+  orders.forEach(o => {
+    const key = getMonthKey(o.orderDate) || 'Không rõ';
+    if (!monthMap[key]) monthMap[key] = { revenue: 0, profit: 0, count: 0 };
+    monthMap[key].revenue += +o.sale || 0;
+    monthMap[key].profit += getProfit(o);
+    monthMap[key].count++;
+  });
+  const months = Object.keys(monthMap).sort().reverse();
+  const mb = $('monthlyBox');
+  if (!months.length) {
+    mb.innerHTML = '<div class="empty-state"><div class="icon">📊</div><p>Chưa có dữ liệu</p></div>';
+  } else {
+    mb.innerHTML = months.map(key => `
+      <div class="month-card">
+        <div class="m">📅 ${key}</div>
+        <div class="revenue">DT: ${fmt(monthMap[key].revenue)} đ</div>
+        <div class="profit">LN: ${fmt(monthMap[key].profit)} đ</div>
+        <div class="orders">${monthMap[key].count} đơn</div>
+      </div>`).join('');
+  }
+
+  // By product
+  const pMap = {};
+  orders.forEach(o => {
+    const k = o.product || 'Chưa phân loại';
+    if (!pMap[k]) pMap[k] = { count: 0, revenue: 0, profit: 0 };
+    pMap[k].count++;
+    pMap[k].revenue += +o.sale || 0;
+    pMap[k].profit += getProfit(o);
+  });
+  const ps = $('productStats');
+  if (!Object.keys(pMap).length) {
+    ps.innerHTML = '<p style="color:var(--gray-4)">Chưa có dữ liệu</p>';
+  } else {
+    ps.innerHTML = `<table style="min-width:unset;width:100%;max-width:700px">
+      <thead><tr>
+        <th>Sản phẩm</th><th>Số đơn</th><th>Doanh thu</th><th>Lợi nhuận</th>
+      </tr></thead>
+      <tbody>
+        ${Object.entries(pMap).map(([k,v]) => `<tr>
+          <td><strong>${k}</strong></td>
+          <td>${v.count}</td>
+          <td>${fmt(v.revenue)} đ</td>
+          <td class="${v.profit>=0?'profit-positive':'profit-negative'}">${fmt(v.profit)} đ</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+  }
+
+  // By status
+  const stMap = {};
+  orders.forEach(o => {
+    const k = o.status || '?';
+    stMap[k] = (stMap[k] || 0) + 1;
+  });
+  const ss = $('statusStats');
+  if (!Object.keys(stMap).length) {
+    ss.innerHTML = '<p style="color:var(--gray-4)">Chưa có dữ liệu</p>';
+  } else {
+    ss.innerHTML = `<div style="display:flex;gap:12px;flex-wrap:wrap">
+      ${Object.entries(stMap).map(([k,v]) => `
+        <div style="background:var(--gray-1);border:1.5px solid var(--gray-3);border-radius:var(--radius-sm);padding:14px 20px">
+          <div style="font-size:20px;font-weight:800">${v}</div>
+          <div>${statusBadge(k)}</div>
+        </div>`).join('')}
+    </div>`;
+  }
+}
+
+// ===================== EXPORT CSV =====================
+function exportCSV() {
+  if (!orders.length) { notify('Chưa có đơn để xuất', 'error'); return; }
+  const esc = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+  const headers = ['Mã','Ngày đặt','Tên','SĐT','Địa chỉ','Sản phẩm','Màu','Cáp','SL','Giá bán','Giá nhập','Phí ship','Đã cọc','COD còn lại','Lợi nhuận','TT','VC','Trạng thái','Ghi chú'];
+  const rows = orders.map(o => [
+    o.id, o.orderDate, o.name, o.phone, o.addr, o.product, o.color, o.cable, o.qty||1,
+    o.sale, o.cost, o.shipfee, o.deposit, o.shipcod||0, getProfit(o),
+    o.pay, o.ship, o.status, o.note
+  ].map(esc).join(','));
+  const csv = '\ufeff' + headers.map(esc).join(',') + '\n' + rows.join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+  a.download = `MiTorus_Orders_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  notify('Đã xuất CSV thành công!');
+}
+
+// ===================== INIT =====================
+// Chỉ chạy sau khi đăng nhập thành công (gọi từ khối AUTH ở trên)
+let appInited = false;
+function initApp() {
+  if (appInited) return; // tránh chạy 2 lần nếu đăng nhập lại
+  appInited = true;
+  setToday();
+  render(); // render nhanh dữ liệu cache trước
+  loadOrdersFromSupabase(); // sau đó đồng bộ dữ liệu mới nhất từ Supabase
+  $('sale').addEventListener('input', calcAll);
+  $('deposit').addEventListener('input', calcAll);
+  $('shipfee').addEventListener('input', calcAll);
+  $('cost').addEventListener('input', calcAll);
+}
+</script>
+</body>
+</html>
